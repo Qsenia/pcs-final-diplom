@@ -6,16 +6,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+
 public class BooleanSearchEngine implements SearchEngine {
-    private Map<String, List<PageEntry>> listMap = new HashMap<>();
-    List<PageEntry> listEntries = new ArrayList<>();
+    Map<String, List<PageEntry>> listMap = new HashMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
         // прочтите тут все pdf и сохраните нужные данные,
         for (File pdf : Objects.requireNonNull(pdfsDir.listFiles())) {
+            //сканируем каждый пдффайл
             var doc = new PdfDocument(new PdfReader(pdf));
             var number = doc.getNumberOfPages();
             for (int i = 1; i <= number; i++) {
+                //перебираем страницы
                 var text = PdfTextExtractor.getTextFromPage(doc.getPage(i));
                 var words = text.split("\\P{IsAlphabetic}+");
                 Map<String, Integer> freqs = new HashMap<>();
@@ -26,11 +28,17 @@ public class BooleanSearchEngine implements SearchEngine {
                     }
                     word = word.toLowerCase();
                     freqs.put(word, freqs.getOrDefault(word, 0) + 1);
+                    //подсчитываем количество слов
                 }
-                var pdfName = pdf.getName();
                 for (var word : freqs.keySet()) {
-                    if (freqs.containsKey(pdfName)) {
-                        PageEntry pageEntry = new PageEntry(pdfName, i, freqs.get(word));
+                    var pdfName = pdf.getName();
+                    PageEntry pageEntry = new PageEntry(pdfName, i, freqs.get(word));
+                    //для каждого уникального слова создаем объект
+                    if (!listMap.containsKey(word)) {
+                        listMap.put(word, new ArrayList<>());
+                        //при добавлении слова инициализируем список
+                        listMap.get(word).add(pageEntry);
+                    } else {
                         listMap.get(word).add(pageEntry);
                     }
                 }
@@ -40,15 +48,12 @@ public class BooleanSearchEngine implements SearchEngine {
 
     @Override
     public List<PageEntry> search(String word) {
-        Iterator<PageEntry> iterator = listEntries.iterator();
-        String lowCase = word.toLowerCase();
-        while (iterator.hasNext()) {
-            if (listMap.get(lowCase) != null) {
-                for (PageEntry pageEntry : listMap.get(lowCase)) {
-                    listEntries.add(pageEntry);
-                }
-            }
+        List<PageEntry> listEntries = new ArrayList<>();
+        if (listMap.get(word) != null) {
+            listEntries.addAll(listMap.get(word));
+            Collections.sort(listEntries);
         }
         return listEntries;
     }
 }
+
