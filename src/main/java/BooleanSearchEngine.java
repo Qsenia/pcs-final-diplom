@@ -8,7 +8,8 @@ import java.util.*;
 
 
 public class BooleanSearchEngine implements SearchEngine {
-    Map<String, List<PageEntry>> listMap = new HashMap<>();
+    protected Map<String, List<PageEntry>> listMap = new HashMap<>();
+
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
         // прочтите тут все pdf и сохраните нужные данные,
@@ -41,6 +42,7 @@ public class BooleanSearchEngine implements SearchEngine {
                     } else {
                         listMap.get(word).add(pageEntry);
                     }
+                    listMap.values().forEach(Collections::sort);//сделала сортировку
                 }
             }
         }
@@ -49,9 +51,8 @@ public class BooleanSearchEngine implements SearchEngine {
     @Override
     public List<PageEntry> search(String word) {
         List<PageEntry> listEntries = new ArrayList<>();
-        if (listMap.get(word) != null) {
-            listEntries.addAll(listMap.get(word));
-            Collections.sort(listEntries);
+        if (listMap.containsKey(word.toLowerCase())) {
+            listEntries.addAll(listMap.get(word.toLowerCase()));
         }
         return listEntries;
     }

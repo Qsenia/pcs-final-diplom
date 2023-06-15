@@ -13,7 +13,7 @@ public class Main {
         try (ServerSocket serverSocket = new ServerSocket(ServerConfig.PORT)) { // стартуем сервер один(!) раз
             System.out.println("Сервер запущен!");
             BooleanSearchEngine engine = new BooleanSearchEngine(new File("pdfs"));
-            System.out.println("Тестируем движок:" + engine.search("бизнес"));
+
             while (true) { // в цикле(!) принимаем подключения
                 try (
                         Socket socket = serverSocket.accept();
@@ -21,11 +21,8 @@ public class Main {
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                     var word = in.readLine();//принимаем запрос
                     var gson = new GsonBuilder().setPrettyPrinting().create();
-                    var response = gson.toJson(engine.search(word));
+                    var response = gson.toJson(engine.search(word.toLowerCase()));
                     System.out.println(response);
-                    //  // отвечать на запросы /
-                    //  {word} -> возвращённое значение метода search(word) в JSON-формате
-                    out.write(response);
 
                 }
             }
