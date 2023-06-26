@@ -10,6 +10,9 @@ import java.util.*;
 public class BooleanSearchEngine implements SearchEngine {
     protected Map<String, List<PageEntry>> listMap = new HashMap<>();
 
+    public void setListMap(Map<String, List<PageEntry>> listMap) {
+        this.listMap = listMap;
+    }
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
         // прочтите тут все pdf и сохраните нужные данные,
@@ -42,8 +45,9 @@ public class BooleanSearchEngine implements SearchEngine {
                     } else {
                         listMap.get(word).add(pageEntry);
                     }
-                    listMap.values().forEach(Collections::sort);//сделала сортировку
+
                 }
+                listMap.values().forEach(Collections::sort);//сделала сортировку
             }
         }
     }
