@@ -11,10 +11,16 @@ public class Client {
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             //общение с клиентом в консоли
-            out.println("Менеджер");
-
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            out.println("Их");
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = " ";
+            while ((line = in.readLine()) != null) {//принимаем запрос
+                stringBuilder.append(line);
+                stringBuilder.append("\n");
+            }
+            System.out.println(stringBuilder);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

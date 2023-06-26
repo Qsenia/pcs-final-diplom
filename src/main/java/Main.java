@@ -22,8 +22,7 @@ public class Main {
                     var word = in.readLine();//принимаем запрос
                     var gson = new GsonBuilder().setPrettyPrinting().create();
                     var response = gson.toJson(engine.search(word.toLowerCase()));
-                    System.out.println(response);
-
+                    out.println(response);
                 }
             }
         }
